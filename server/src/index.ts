@@ -43,12 +43,12 @@ app.use(morgan('common'));
 app.use(cors());
 
 //Routes
-app.use('/kpi', kpiRoutes);
-app.use('/product', productRoutes);
-app.use('/transaction', transactionRoutes);
-app.use('/users', authRoutes);
-app.use('/vendor', vendorRoutes);
-app.use('/student-course', studentCourseRoutes);
+app.use('/api/kpi', kpiRoutes);
+app.use('/api/product', productRoutes);
+app.use('/api/transaction', transactionRoutes);
+app.use('/api/users', authRoutes);
+app.use('/api/vendor', vendorRoutes);
+app.use('/api/student-course', studentCourseRoutes);
 
 // Server frontend static assets and handle catch-all route
 if (process.env.NODE_ENV === 'production') {

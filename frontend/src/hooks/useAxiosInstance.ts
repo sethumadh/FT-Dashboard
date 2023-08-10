@@ -1,7 +1,7 @@
 import axios, { AxiosInstance } from "axios";
 import { useAppSelector } from "../redux/store";
 
-const baseURL = "http://localhost:1337";
+const baseURL = "http://localhost:1337/api";
 
 // Define a custom type for the return value of useAxiosInstance
 type UseAxiosInstanceType = {

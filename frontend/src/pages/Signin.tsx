@@ -19,7 +19,7 @@ import { useAppDispatch } from "../redux/store"
 
 const Signin = () => {
   const dispatch = useAppDispatch()
-  const baseURL = "http://localhost:1337"
+  const baseURL = "http://localhost:1337/api"
   const navigate = useNavigate()
   const [isSubmitting, setIsSubmitting] = useState(false)
 

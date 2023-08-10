@@ -9,8 +9,10 @@ import { useAppSelector, useAppDispatch } from "../redux/store"
 import axios from "axios"
 import { StudentListSchema } from "../helper/zodSchema"
 import { fetchStudentList } from "../redux/features/studentListSlice"
+import useAxiosInstance from "../hooks/useAxiosInstance"
 
 const Dashboard = () => {
+  const { axiosInstance } = useAxiosInstance()
   const dispatch = useAppDispatch()
   const baseURL = "http://localhost:1337"
   const user = useAppSelector((state) => state.user)
@@ -18,17 +20,10 @@ const Dashboard = () => {
   useEffect(() => {
     const fetchStudents = async () => {
       try {
-        const data = await axios.get(
-          `${baseURL}/vendor/6486c6ab01d5e2e87cafd3e1`,
-          {
-            headers: {
-              Accept: "application/json",
-              Authorization: `Bearer ${user.accessToken}`,
-            },
-          }
-        )
+        const data = await axiosInstance.get(`/vendor/6486c6ab01d5e2e87cafd3e1`)
 
         const std = StudentListSchema.parse(data?.data?.studentsEnrolled)
+        
 
         dispatch(fetchStudentList(std))
       } catch (err) {
@@ -43,7 +38,7 @@ const Dashboard = () => {
       <div id="dashboard" className="mx-8 ">
         <Summary />
       </div>
-      
+
       <div className="mt-8 mx-8 flex flex-col md:flex md:flex-row md:space-x-5 space-x-0 space-y-5 md:space-y-0">
         <div className=" w-full md:w-2/3 ">
           <AverageStudentsChart />

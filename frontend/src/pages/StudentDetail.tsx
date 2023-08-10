@@ -25,10 +25,12 @@ import {
 } from "../helper/functions/functions"
 import { CourseDetailsSchema, StudentDetailsSchema } from "../helper/zodSchema"
 import { useAppSelector } from "../redux/store"
+import useAxiosInstance from "../hooks/useAxiosInstance"
 
 // import LoadingSpinner from "../components/LoadingSpinner"
 
 const StudentDetail = () => {
+  const { axiosInstance } = useAxiosInstance()
   const [open, setOpen] = useState([0])
   const [view, setView] = useState(true)
   const [Aopen, setAOPen] = useState(0)
@@ -56,15 +58,7 @@ const StudentDetail = () => {
     const fetchStudent = async () => {
       try {
         setIsLoading(true)
-        const data = await axios.get(
-          `${baseURL}/student-course/${params.id}`,
-          {
-            headers: {
-              Accept: "application/json",
-              Authorization: `Bearer ${user.accessToken}`,
-            },
-          }
-        )
+        const data = await axiosInstance(`/student-course/${params.id}`)
         console.log(data?.data, "<<<<< full data")
         const std = StudentDetailsSchema.parse(data?.data?.basicDetails)
         const ctd = CourseDetailsSchema.parse(data?.data.courses)
@@ -113,7 +107,6 @@ const StudentDetail = () => {
           </h1>
           <div className="flex flex-col space-x-0 space-y-2 md:space-y-0 md:mb-2 min-w-max items-center justify-center md:justify-around md:items-center md:space-x-12 md:flex-row px-8 md:px-2 w-full pt-4"></div>
           <div className="flex flex-wrap-reverse justify-center text-white font-extrabold">
-
             <div className="bg-gradient-to-r from-orange-600  to-amber-400 flex m-8 md:mt-0 flex-col relative w-full max-w-sm items-center justify-center p-5  border rounded-3xl font-poppins shadow-lg text-base border-[#FBA11C]">
               <div className="flex items-center justify-between w-full text-lg">
                 <div>
@@ -139,7 +132,7 @@ const StudentDetail = () => {
                         {" "}
                         {ProgressCard(course).progressCard.completedContent < 10
                           ? "0" +
-                          ProgressCard(course).progressCard.completedContent
+                            ProgressCard(course).progressCard.completedContent
                           : ProgressCard(course).progressCard.completedContent}
                       </p>
                     )}
@@ -175,8 +168,11 @@ const StudentDetail = () => {
                     style={{ color: "white", width: "20px" }}
                   />
                 </div>
-                {!student?.mobileNumber ? <div className="">--</div> : <div className="">{student?.mobileNumber}</div>}
-
+                {!student?.mobileNumber ? (
+                  <div className="">--</div>
+                ) : (
+                  <div className="">{student?.mobileNumber}</div>
+                )}
               </div>
               <div className="flex w-full ">
                 <div className="w-[60px]">
@@ -193,8 +189,11 @@ const StudentDetail = () => {
                     style={{ color: "white", width: "20px" }}
                   />
                 </div>
-                {!student?.city ? <div className="">--</div> : <div className="">{student?.city}</div>}
-
+                {!student?.city ? (
+                  <div className="">--</div>
+                ) : (
+                  <div className="">{student?.city}</div>
+                )}
               </div>
             </div>
 
@@ -211,7 +210,6 @@ const StudentDetail = () => {
                 <div className="mt-4 text-xs"> to be announced **</div>
               </div>
             </div>
-
           </div>
         </div>
 
@@ -260,12 +258,13 @@ const StudentDetail = () => {
                           {c.completedChapters?.map((chp, i) => (
                             <div
                               key={i}
-                              className={`rounded-xl ${chp.status == "COMPLETED"
+                              className={`rounded-xl ${
+                                chp.status == "COMPLETED"
                                   ? "bg-[#B3FFAE]"
                                   : chp.status == "INPROGRESS"
-                                    ? "bg-[#F8FFDB]"
-                                    : "bg-[#FF7D7D]"
-                                }`}
+                                  ? "bg-[#F8FFDB]"
+                                  : "bg-[#FF7D7D]"
+                              }`}
                             >
                               <div className="text-base md:text-lg font-semibold px-4 py-2 relative">
                                 <div className=" text-sm text-black-500 font-light absolute hidden sm:right-2 sm:flex gap-1 items-center">
@@ -292,9 +291,7 @@ const StudentDetail = () => {
                                     <span className=" font-light w-1/3">
                                       Progress
                                     </span>
-                                    <span className="font-light">
-                                      :
-                                    </span>
+                                    <span className="font-light">:</span>
                                     <span className="px-4">
                                       <CircularProgressLabel
                                         value={progressChp(
@@ -382,7 +379,7 @@ const StudentDetail = () => {
                                   handleOpen(
                                     parseInt(
                                       (index + 1).toString() +
-                                      (i + 1).toString()
+                                        (i + 1).toString()
                                     )
                                   )
                                 }}
@@ -410,7 +407,7 @@ const StudentDetail = () => {
                                   open={open.includes(
                                     parseInt(
                                       (index + 1).toString() +
-                                      (i + 1).toString()
+                                        (i + 1).toString()
                                     )
                                   )}
                                 >
@@ -420,12 +417,13 @@ const StudentDetail = () => {
                                         (cnt, cntIndex) => (
                                           <div
                                             key={cntIndex}
-                                            className={`flex flex-col space-y-1 shadow-lg relative ${cnt.status == "COMPLETED"
+                                            className={`flex flex-col space-y-1 shadow-lg relative ${
+                                              cnt.status == "COMPLETED"
                                                 ? "bg-[#B3FFAE]"
                                                 : cnt.status == "STARTED"
-                                                  ? "bg-[#F8FFDB]"
-                                                  : "bg-[#FF7D7D]"
-                                              }`}
+                                                ? "bg-[#F8FFDB]"
+                                                : "bg-[#FF7D7D]"
+                                            }`}
                                           >
                                             <h1 className=" text-sm text-gray-500 font-light absolute right-2 top-2 hidden md:flex">
                                               {/* <span className="pr-2 text-xs">
@@ -466,7 +464,7 @@ const StudentDetail = () => {
                                                   :
                                                   <span className="capitalize px-4">
                                                     {cnt.status ==
-                                                      "COMPLETED" ? (
+                                                    "COMPLETED" ? (
                                                       <span className="">
                                                         <span className="pr-2">
                                                           completed
@@ -531,8 +529,8 @@ const StudentDetail = () => {
                                                   <span className=" px-4">
                                                     {cnt.startTime
                                                       ? dateFormat(
-                                                        cnt.startTime
-                                                      )
+                                                          cnt.startTime
+                                                        )
                                                       : "NA"}
                                                   </span>
                                                 </div>
@@ -544,8 +542,8 @@ const StudentDetail = () => {
                                                   <span className="px-4">
                                                     {cnt.completedTime
                                                       ? dateFormat(
-                                                        cnt.completedTime
-                                                      )
+                                                          cnt.completedTime
+                                                        )
                                                       : "NA"}
                                                   </span>
                                                 </div>
