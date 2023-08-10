@@ -54,7 +54,7 @@ app.use('/api/student-course', studentCourseRoutes);
 // Server frontend static assets and handle catch-all route
 if (process.env.NODE_ENV === 'production') {
     const __dirname = path.resolve();
-    app.use(express.static(path.join(__dirname, '/frontend/dist')));
+    app.use(express.static(path.join(__dirname, '/frontend/dist/index.html')));
 
     app.get('*', (req: Request, res: Response) => res.sendFile(path.resolve(__dirname, 'frontend', 'dist', 'index.html')));
 }
