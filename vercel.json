@@ -8,12 +8,13 @@
   ],
   "routes": [
     {
-      "src": "/api/(.*)",   
-      "dest": "/$1"         
+      "src": "/api/(.*)",
+      "dest": "/$1"
     },
     {
       "src": "/(.*)",
-      "dest": "/"           
+      "dest": "/"
     }
-  ]
+  ],
+  "rewrites": [{ "source": "/api/(.*)", "destination": "/api" }]
 }
