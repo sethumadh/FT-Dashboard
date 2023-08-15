@@ -14,21 +14,21 @@ import {
   signupSucess,
 } from "../helper/functions/functions"
 import { LoginFormDataSchema, SignupSchema } from "../helper/zodSchema"
-import { fetchUser } from "../redux/features/userSlice"
-import { useAppDispatch } from "../redux/store"
+import { fetchUser, setPersist } from "../redux/features/userSlice"
+import { useAppDispatch, useAppSelector } from "../redux/store"
 
 const Signin = () => {
+  const persist = useAppSelector((state) => state.user.persist)
   const location = useLocation()
   const dispatch = useAppDispatch()
   const baseURL = "http://localhost:1337/api"
   const navigate = useNavigate()
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const from = location.state?.from?.pathname || '/'
+  const from = location.state?.from?.pathname || "/"
   type LoginFormData = z.infer<typeof LoginFormDataSchema>
   type SignupData = z.infer<typeof SignupSchema>
 
 
-  console.log(from, "location")
   const methods = useForm<LoginFormData>({
     // mode: "onChange",
     resolver: zodResolver(LoginFormDataSchema),
@@ -175,6 +175,20 @@ const Signin = () => {
                           </span>
                         )}
                       </div>
+                    </label>
+                    <input
+                      type="checkbox"
+                      checked={persist}
+                      onChange={(e) => {
+                        dispatch(setPersist(e.target.checked))
+                      }}
+                    />
+                    <label
+                      htmlFor="trust"
+                      className="italic font-poppins font-bold"
+                    >
+                      {" "}
+                      Trust this device
                     </label>
 
                     {/* <!-- You should use a button here, as the anchor is only used for the example  --> */}

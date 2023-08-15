@@ -6,6 +6,6 @@ import { protect } from '../controllers/authController';
 
 const router = express.Router();
 
-router.get('/transactions',protect, asyncErrorHanlder(getTransaction));
+router.get('/transactions',asyncErrorHanlder(getTransaction));
 
 export default router;

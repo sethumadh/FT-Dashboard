@@ -21,7 +21,7 @@ const persistConfig = {
   key: "root",
   version: 1,
   storage,
-  blacklist: [studentListSlice.name, sidebarSlice.name],
+  blacklist: [studentListSlice.name, sidebarSlice.name, userSlice.name, ],
 }
 export const reducer = combineReducers({
   [api.reducerPath]: api.reducer, // this is my RTK Query

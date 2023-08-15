@@ -6,6 +6,6 @@ import { protect } from '../controllers/authController';
 
 const router = express.Router();
 
-router.get('/kpis', protect, asyncErrorHanlder(getKpi));
+router.get('/kpis', asyncErrorHanlder(getKpi));
 
 export default router;

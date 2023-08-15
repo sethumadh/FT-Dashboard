@@ -12,6 +12,7 @@ export type User = {
 }
 type InitialStateprops = {
   isLoggedIn: boolean
+  persist: boolean
 } & User
 
 const initialState: InitialStateprops = {
@@ -21,8 +22,10 @@ const initialState: InitialStateprops = {
     email: "",
   },
   isLoggedIn: false,
+  persist: JSON.parse(localStorage.getItem("persistLogin") as string),
 }
 // const customEntityAdapter = createEntityAdapter<User>()
+
 export const userSlice = createSlice({
   name: "user",
   initialState,
@@ -38,6 +41,12 @@ export const userSlice = createSlice({
         state.isLoggedIn = false
       }
     },
+    setPersist: (state, action: PayloadAction<boolean>) => {
+      state.persist = action.payload
+      JSON.stringify(
+        localStorage.setItem("persistLogin", action.payload ? "true" : "false")
+      )
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(PURGE, () => {
@@ -47,6 +56,6 @@ export const userSlice = createSlice({
 })
 
 // Action creators are generated for each case reducer function
-export const { fetchUser } = userSlice.actions
+export const { fetchUser, setPersist } = userSlice.actions
 
 export default userSlice

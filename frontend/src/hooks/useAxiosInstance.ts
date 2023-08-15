@@ -2,6 +2,7 @@ import axios, { AxiosInstance } from "axios"
 import { useAppSelector, useAppDispatch } from "../redux/store"
 import useRefreshToken from "./useRefreshToken"
 import { fetchUser } from "../redux/features/userSlice"
+import { useNavigate } from "react-router-dom"
 
 const baseURL = "http://localhost:1337"
 
@@ -12,6 +13,7 @@ type UseAxiosInstanceType = {
 }
 
 const useAxiosInstance = (): UseAxiosInstanceType => {
+  const navigate = useNavigate()
   const dispatch = useAppDispatch()
   const { refresh } = useRefreshToken()
   const user = useAppSelector((state) => state.user)
@@ -49,17 +51,17 @@ const useAxiosInstance = (): UseAxiosInstanceType => {
       // console.log(error?.config.sent, "<<-- before login")
       const prevReq = error?.config
       if (
-        error?.response?.data?.message == "TokenExpiredError" || 'jwt expired' &&
-        !prevReq?.sent == true
+        error?.response?.data?.message == "TokenExpiredError" ||
+        ("jwt expired" && !prevReq?.sent == true)
       ) {
         prevReq.sent = true
         const response = await refresh()
-        if (response.data.access_token) {
+        if (response?.data.access_token) {
           const userData = {
-            accessToken: response.data.access_token,
+            accessToken: response?.data.access_token,
             user: {
-              name: response.data.name,
-              email: response.data.email,
+              name: response?.data.name,
+              email: response?.data.email,
             },
           }
           // console.log(userData.accessToken, "new access token")
@@ -68,9 +70,10 @@ const useAxiosInstance = (): UseAxiosInstanceType => {
         // console.log(prevReq?.sent, "<<-- after login")
         prevReq.headers[
           `Authorization`
-        ] = `Bearer ${response.data.access_token}`
+        ] = `Bearer ${response?.data.access_token}`
         return axiosInstance(prevReq)
       }
+      
       return Promise.reject(error)
     }
   )

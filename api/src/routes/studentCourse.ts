@@ -6,8 +6,8 @@ import { protect } from '../controllers/authController';
 
 const router = express.Router();
 
-router.get('/:id', protect, asyncErrorHanlder(getStudentCourse));
-router.post('/add', protect, asyncErrorHanlder(addStudentCourse));
-router.patch('/:id', protect, asyncErrorHanlder(updateCourse))
+router.get('/:id', asyncErrorHanlder(getStudentCourse));
+router.post('/add', asyncErrorHanlder(addStudentCourse));
+router.patch('/:id', asyncErrorHanlder(updateCourse))
 
 export default router;

@@ -6,9 +6,9 @@ import { protect, restrict } from '../controllers/authController';
 
 const router = express.Router();
 
-router.route('/products').get(protect, asyncErrorHanlder(getProducts));
-router.route('/:id').get(protect, asyncErrorHanlder(getOneProduct));
-router.route('/create').post(protect, asyncErrorHanlder(addOneproduct));
-router.route('/delete/:id').delete(protect, restrict('admin','dev'), asyncErrorHanlder(deleteOneproduct));
+router.route('/products').get( asyncErrorHanlder(getProducts));
+router.route('/:id').get( asyncErrorHanlder(getOneProduct));
+router.route('/create').post( asyncErrorHanlder(addOneproduct));
+router.route('/delete/:id').delete( restrict('admin','dev'), asyncErrorHanlder(deleteOneproduct));
 
 export default router;

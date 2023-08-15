@@ -21,18 +21,21 @@ import { store } from "./redux/store"
 import Analytics from "./pages/Analytics"
 import Predictions from "./pages/Predictions"
 import axios from "axios"
+import PersistLogin from "./components/layouts/PersistLogin"
 
 axios.defaults.withCredentials = true
 const router = createBrowserRouter(
   createRoutesFromElements(
     <>
-      <Route element={<AuthRequired />}>
-        <Route path="/" element={<DashboardLayout />}>
-          <Route index element={<Dashboard />} />
-          <Route path="/student_detail/:id" element={<StudentDetail />} />
-          <Route path="/changepassword" element={<ChangePassword />} />
-          <Route path="/analytics" element={<Analytics />} />
-          <Route path="/predictions" element={<Predictions />} />
+      <Route element={<PersistLogin />}>
+        <Route element={<AuthRequired />}>
+          <Route path="/" element={<DashboardLayout />}>
+            <Route index element={<Dashboard />} />
+            <Route path="/student_detail/:id" element={<StudentDetail />} />
+            <Route path="/changepassword" element={<ChangePassword />} />
+            <Route path="/analytics" element={<Analytics />} />
+            <Route path="/predictions" element={<Predictions />} />
+          </Route>
         </Route>
       </Route>
       <Route element={<SigninLayout />}>

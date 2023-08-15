@@ -40,11 +40,11 @@ export const signup = asyncErrorHanlder(async (req: Request, res: Response, next
 
     const newUser: IUserModel = await User.create(req.body);
     const token = jwt.sign({ email: newUser.email, name: newUser.name, id: newUser._id }, process.env.SECRET_STR!, {
-        expiresIn: '60000s'
+        expiresIn: '10s'
     });
 
     const refreshToken = jwt.sign({ email: newUser.email }, process.env.REFRESH_SECRET_STR!, {
-        expiresIn: '1d'
+        expiresIn: '15s'
     });
 
     res.cookie('refreshToken', refreshToken, {
@@ -85,10 +85,10 @@ export const login = asyncErrorHanlder(async (req: Request, res: Response, next:
         return next(error);
     }
     const token = jwt.sign({ email: existingUser.email, name: existingUser.name, id: existingUser._id }, process.env.SECRET_STR!, {
-        expiresIn: '60000s'
+        expiresIn: '10s'
     });
     const refreshToken = jwt.sign({ email: existingUser.email }, process.env.REFRESH_SECRET_STR!, {
-        expiresIn: '1d'
+        expiresIn: '15s'
     });
     // console.log(cookie, "<<== cookie  in refrseh ep")
     res.cookie('refreshToken', refreshToken, {

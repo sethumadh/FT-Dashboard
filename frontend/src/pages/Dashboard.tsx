@@ -4,20 +4,21 @@ import CourseProgressChart from "../components/charts/CourseProgressChart"
 import StudentsList from "../components/StudentsList"
 // import LoadingSpinner from "@components/LoadingSpinner"
 import Summary from "../components/Summary"
+import { useNavigate } from "react-router-dom"
 
 import { useAppSelector, useAppDispatch } from "../redux/store"
 import { StudentListSchema } from "../helper/zodSchema"
 import { fetchStudentList } from "../redux/features/studentListSlice"
 import useAxiosInstance from "../hooks/useAxiosInstance"
-
+import { fetchUser } from "../redux/features/userSlice"
 
 const Dashboard = () => {
+  const navigate = useNavigate()
   const [isMounted, setIsMounted] = useState(false)
   const { axiosInstance, PubcliAxiosInstance } = useAxiosInstance()
   const controller = new AbortController()
 
   const dispatch = useAppDispatch()
-
 
   useEffect(() => {
     setIsMounted(true)
@@ -42,9 +43,20 @@ const Dashboard = () => {
           // console.log(res, "->>refresh")
           // console.log(std, "students")
           dispatch(fetchStudentList(std))
-        } catch (err) {
-          // console.log(err, ">>>>>>refreshe error")
-          // signout
+        } catch (err: any) {
+          console.log(err, ">>>>>>refreshe error")
+          // if (err?.config?.data?.message != 'No refresh Token expired. @ksm') {
+          //   dispatch(
+          //     fetchUser({
+          //       accessToken: "",
+          //       user: {
+          //         name: "",
+          //         email: "",
+          //       },
+          //     })
+          //   )
+          //   navigate("/login")
+          // }
         }
       }
     }
@@ -53,7 +65,7 @@ const Dashboard = () => {
       setIsMounted(false)
       controller.abort()
     }
-  }, [axiosInstance,isMounted,dispatch,controller])
+  }, [axiosInstance, isMounted, dispatch, controller, navigate])
   return (
     <div className=" my-8 w-full max-w-7xl mx-auto font-mada">
       <div id="dashboard" className="mx-8 ">
