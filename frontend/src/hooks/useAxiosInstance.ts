@@ -15,7 +15,7 @@ const useAxiosInstance = (): UseAxiosInstanceType => {
   const dispatch = useAppDispatch()
   const { refresh } = useRefreshToken()
   const user = useAppSelector((state) => state.user)
-  console.log(user.accessToken, "access Token")
+  // console.log(user.accessToken, "access Token")
 
   const axiosInstance: AxiosInstance = axios.create({
     baseURL,
@@ -38,7 +38,7 @@ const useAxiosInstance = (): UseAxiosInstanceType => {
       return request
     },
     async (error) => {
-      console.log("Request Error", error)
+      // console.log("Request Error", error)
       return Promise.reject(error)
     }
   )
@@ -46,7 +46,7 @@ const useAxiosInstance = (): UseAxiosInstanceType => {
   axiosInstance.interceptors.response.use(
     (response) => response,
     async (error) => {
-      console.log(error?.config.sent, "<<-- before login")
+      // console.log(error?.config.sent, "<<-- before login")
       const prevReq = error?.config
       if (
         error?.response?.data?.message == "TokenExpiredError" || 'jwt expired' &&
@@ -62,10 +62,10 @@ const useAxiosInstance = (): UseAxiosInstanceType => {
               email: response.data.email,
             },
           }
-          console.log(userData.accessToken, "new access token")
+          // console.log(userData.accessToken, "new access token")
           dispatch(fetchUser({ ...userData }))
         }
-        console.log(prevReq?.sent, "<<-- after login")
+        // console.log(prevReq?.sent, "<<-- after login")
         prevReq.headers[
           `Authorization`
         ] = `Bearer ${response.data.access_token}`

@@ -41,11 +41,11 @@ const ChangePassword = () => {
     },
   })
   const onSubmit = async (data: ChangePassworData) => {
-    console.log(data)
+    // console.log(data)
     handleSubmit(data)
   }
   function handleSubmit(changePasswordData: ChangePassworData) {
-    console.log(changePasswordData)
+    // console.log(changePasswordData)
     changePassword(changePasswordData)
   }
   const changePassword = async (changePasswordData: {
@@ -79,16 +79,26 @@ const ChangePassword = () => {
 
 
 
-      const res = await axiosInstance.post(`/api/users/logout`)
-      console.log(response)
+      // const res = await axiosInstance.post(`/api/users/logout`)
+      const res = await axios.post(
+        `${baseURL}/api/users/logout`,
+        changePasswordData,
+        {
+          headers: {
+            Accept: "application/json",
+            Authorization: `Bearer ${user.accessToken}`,
+          },
+        }
+      )
+      // console.log(response)
       persistor.purge()
       navigate("/login")
 
-      console.log(response, "<<<<---- response")
-      console.log(res, "<<<<---- res")
+      // console.log(response, "<<<<---- response")
+      // console.log(res, "<<<<---- res")
       toast.success("Password updated successfully Please login again!")
     } catch (err) {
-      console.log(err)
+      // console.log(err)
       toast.error("Failed to update password try again")
     } finally {
       setIsSubmitting(false)

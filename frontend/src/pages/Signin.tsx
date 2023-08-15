@@ -46,11 +46,11 @@ const Signin = () => {
     },
   })
   const onSubmit = async (data: LoginFormData) => {
-    console.log(data)
+    // console.log(data)
     handleSubmit(data)
   }
   function handleSubmit(loginFormData: LoginFormData) {
-    console.log(loginFormData)
+    // console.log(loginFormData)
     signin(loginFormData)
   }
 
@@ -74,7 +74,7 @@ const Signin = () => {
         navigate("/", { replace: true })
       }
     } catch (err) {
-      console.log(err)
+      // console.log(err)
       loginError()
     } finally {
       setIsSubmitting(false)
@@ -82,11 +82,11 @@ const Signin = () => {
   }
 
   const onSubmitSignup = async (data: SignupData) => {
-    console.log(data)
+    // console.log(data)
     handleSignup(data)
   }
   function handleSignup(signupFormData: SignupData) {
-    console.log(signupFormData)
+    // console.log(signupFormData)
     signup(signupFormData)
   }
   const signup = async (signupFormData: {
@@ -94,7 +94,7 @@ const Signin = () => {
     password: string
     confirmPassword: string
   }) => {
-    console.log(signupFormData, "<<-- signup ")
+    // console.log(signupFormData, "<<-- signup ")
     setIsSubmitting(true)
     try {
       const response = await axios.post(
@@ -116,7 +116,7 @@ const Signin = () => {
         navigate("/", { replace: true })
       }
     } catch (err) {
-      console.log(err)
+      // console.log(err)
       signupError()
     } finally {
       setIsSubmitting(false)

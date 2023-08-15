@@ -40,10 +40,10 @@ const Dashboard = () => {
           //   signal: controller.signal,
           // })
           // console.log(res, "->>refresh")
-          console.log(std, "students")
+          // console.log(std, "students")
           dispatch(fetchStudentList(std))
         } catch (err) {
-          console.log(err, ">>>>>>refreshe error")
+          // console.log(err, ">>>>>>refreshe error")
           // signout
         }
       }

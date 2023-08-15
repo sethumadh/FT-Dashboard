@@ -58,7 +58,7 @@ const Predictions = () => {
       logoutSuccess()
       navigate("/login")
       const response = await axiosInstance.post(`/api/users/logout`)
-      console.log(response)
+      // console.log(response)
     } catch (err) {
       // console.log(err)
       navigate("/login")
