@@ -1,7 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod"
 import axios from "axios"
 import { FormProvider, useForm } from "react-hook-form"
-import { useNavigate } from "react-router-dom"
+import { useNavigate, useLocation } from "react-router-dom"
 import { z } from "zod"
 
 import { CircularProgress } from "@mui/material"
@@ -18,14 +18,17 @@ import { fetchUser } from "../redux/features/userSlice"
 import { useAppDispatch } from "../redux/store"
 
 const Signin = () => {
+  const location = useLocation()
   const dispatch = useAppDispatch()
   const baseURL = "http://localhost:1337/api"
   const navigate = useNavigate()
   const [isSubmitting, setIsSubmitting] = useState(false)
-
+  const from = location.state?.from?.pathname || '/'
   type LoginFormData = z.infer<typeof LoginFormDataSchema>
   type SignupData = z.infer<typeof SignupSchema>
 
+
+  console.log(from, "location")
   const methods = useForm<LoginFormData>({
     // mode: "onChange",
     resolver: zodResolver(LoginFormDataSchema),

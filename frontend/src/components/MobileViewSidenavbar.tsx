@@ -19,7 +19,6 @@ import { Avatar, AvatarFallback, AvatarImage } from "../components/ui/avatar"
 import { logoutSuccess } from "../helper/functions/functions"
 import { icons } from "../constant"
 
-
 const MobileViewSidenavbar = ({
   openRight,
   closeDrawerRight,
@@ -58,6 +57,20 @@ const MobileViewSidenavbar = ({
               </ListItemPrefix>
 
               <Link to={"/"}>Dashboard</Link>
+            </ListItem>
+            <ListItem onClick={closeDrawerRight}>
+              <ListItemPrefix>
+                <icons.PresentationChartBarIcon className="h-5 w-5" />
+              </ListItemPrefix>
+
+              <Link to={"/analytics"}>Analytics</Link>
+            </ListItem>
+            <ListItem onClick={closeDrawerRight}>
+              <ListItemPrefix>
+                <icons.PresentationChartBarIcon className="h-5 w-5" />
+              </ListItemPrefix>
+
+              <Link to={`/predictions`}>Predictions</Link>
             </ListItem>
 
             <ListItem onClick={closeDrawerRight}>

@@ -8,7 +8,7 @@ import {
   CardFooter,
   Typography,
 } from "@material-tailwind/react"
-import { useNavigate } from "react-router-dom"
+import { useNavigate, useLocation } from "react-router-dom"
 import axios from "axios"
 import { Fragment, useState } from "react"
 import { FormProvider, useForm } from "react-hook-form"
@@ -22,6 +22,7 @@ import { persistor, useAppSelector } from "../redux/store"
 import useAxiosInstance from "../hooks/useAxiosInstance"
 
 const ChangePassword = () => {
+  const location = useLocation()
   const { axiosInstance, PubcliAxiosInstance } = useAxiosInstance()
   const navigate = useNavigate()
   const user = useAppSelector((state) => state.user)
@@ -31,6 +32,8 @@ const ChangePassword = () => {
   const handleOpen = (value: number) => {
     setOpen(open === value ? 0 : value)
   }
+
+ 
 
   type ChangePassworData = z.infer<typeof ChangePasswordSchema>
   const methods = useForm<ChangePassworData>({
@@ -77,8 +80,6 @@ const ChangePassword = () => {
       //   }
       // )
 
-
-
       // const res = await axiosInstance.post(`/api/users/logout`)
       const res = await axios.post(
         `${baseURL}/api/users/logout`,
@@ -92,7 +93,7 @@ const ChangePassword = () => {
       )
       // console.log(response)
       persistor.purge()
-      navigate("/login")
+      navigate("/login", { state: { from: location }, replace:true })
 
       // console.log(response, "<<<<---- response")
       // console.log(res, "<<<<---- res")
