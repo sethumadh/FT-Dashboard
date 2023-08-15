@@ -34,7 +34,7 @@ const AreaChart = () => {
   const handleLogout = async () => {
     try {
       persistor.purge()
-      logoutSuccess()
+      // logoutSuccess()
       navigate("/login")
       const response = await axiosInstance.post(`/api/users/logout`)
       console.log(response)
@@ -125,9 +125,9 @@ const AreaChart = () => {
       },
     ],
   }
-  if (isError) {
-    handleLogout()
-  }
+  // if (isError) {
+  //   handleLogout()
+  // }
   return (
     <div>
       <HighchartsReact highcharts={Highcharts} options={options} />

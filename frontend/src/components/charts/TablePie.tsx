@@ -63,7 +63,7 @@ const TablePie = () => {
   const handleLogout = async () => {
     try {
       persistor.purge()
-      logoutSuccess()
+      // logoutSuccess()
       navigate("/login")
       const response = await axiosInstance.post(`/api/users/logout`)
       console.log(response)

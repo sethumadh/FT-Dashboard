@@ -117,7 +117,7 @@ export const refresh = asyncErrorHanlder(async (req: Request, res: Response, nex
     const cookie = req.cookies.refreshToken;
     console.log(cookie, '<<== cookie  in refrseh ep');
     if (!cookie) {
-        const error = customError('hello No Token available in header/authorize. This is because the user is not logged in or token is not present in the protected route. @ksm', 'fail', 400, true);
+        const error = customError(' No refresh Token available in cokkie. . @ksm', 'fail', 400, true);
         return next(error);
     }
     const refreshToken = cookie;
@@ -131,7 +131,7 @@ export const refresh = asyncErrorHanlder(async (req: Request, res: Response, nex
         decodedRefreshToken = decoded;
         const existingUser: IUserModel = (await User.findOne({ email: decodedRefreshToken.email })) as IUserModel;
         if (!existingUser) {
-            const error = customError('No such user with this token exists @ksm', 'fail', 400, true);
+            const error = customError("TokenExpiredError", 'fail', 400, true);
             return next(error);
         }
         const token = jwt.sign({ email: existingUser.email, name: existingUser.name, id: existingUser._id }, process.env.SECRET_STR!, {

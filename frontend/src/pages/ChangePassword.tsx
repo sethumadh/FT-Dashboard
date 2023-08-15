@@ -22,7 +22,7 @@ import { persistor, useAppSelector } from "../redux/store"
 import useAxiosInstance from "../hooks/useAxiosInstance"
 
 const ChangePassword = () => {
-  const { axiosInstance } = useAxiosInstance()
+  const { axiosInstance, PubcliAxiosInstance } = useAxiosInstance()
   const navigate = useNavigate()
   const user = useAppSelector((state) => state.user)
   const [open, setOpen] = useState(0)
@@ -30,10 +30,6 @@ const ChangePassword = () => {
   const baseURL = "http://localhost:1337"
   const handleOpen = (value: number) => {
     setOpen(open === value ? 0 : value)
-  }
-  const handleLogout = () => {
-    persistor.purge()
-    navigate("/login")
   }
 
   type ChangePassworData = z.infer<typeof ChangePasswordSchema>
@@ -68,13 +64,29 @@ const ChangePassword = () => {
       //     },
       //   }
       // )
-      const response = axiosInstance.post(
+      // persistor.purge()
+      const response = await axiosInstance.post(
         `/api/users/update/${user.user.email}`,
         changePasswordData
       )
+      // const res = await axios.post(
+      //   `http://localhost:1337/api/users/logout`,
+      //   {},
+      //   {
+      //     withCredentials: true,
+      //   }
+      // )
+
+
+
+      const res = await axiosInstance.post(`/api/users/logout`)
+      console.log(response)
+      persistor.purge()
+      navigate("/login")
+
       console.log(response, "<<<<---- response")
+      console.log(res, "<<<<---- res")
       toast.success("Password updated successfully Please login again!")
-      handleLogout()
     } catch (err) {
       console.log(err)
       toast.error("Failed to update password try again")
