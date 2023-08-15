@@ -40,22 +40,28 @@ export const signup = asyncErrorHanlder(async (req: Request, res: Response, next
 
     const newUser: IUserModel = await User.create(req.body);
     const token = jwt.sign({ email: newUser.email, name: newUser.name, id: newUser._id }, process.env.SECRET_STR!, {
-        expiresIn: process.env.LOGIN_EXPIRES
+        expiresIn: '10s'
     });
 
-    // set the jwt inside the cookie to send to the client
-    // res.cookie('jwt', token, {
-    //     httpOnly: true,
-    //     secure: process.env.NODE_ENV != 'development',
-    //     sameSite: 'strict',
-    //     maxAge: 1 * 24 * 60 * 60 * 1000
-    // });
+    const refreshToken = jwt.sign({ email: newUser.email }, process.env.REFRESH_SECRET_STR!, {
+        expiresIn: '1d'
+    });
+
+    res.cookie('refreshToken', refreshToken, {
+        httpOnly: true,
+        // signed:true,
+        secure: process.env.NODE_ENV != 'development',
+        sameSite: 'none',
+        maxAge: 1 * 24 * 60 * 60 * 1000 // this should match with the refresh token's expiry
+        // maxAge: 20 * 1000000000
+    });
     res.status(201).json({
         status: 'Success',
         _id: newUser._id,
         access_token: token,
         name: newUser.name,
         email: newUser.email,
+        roles: newUser.role,
         message: `user account for ${newUser.name} is created`
     });
 });
@@ -79,24 +85,71 @@ export const login = asyncErrorHanlder(async (req: Request, res: Response, next:
         return next(error);
     }
     const token = jwt.sign({ email: existingUser.email, name: existingUser.name, id: existingUser._id }, process.env.SECRET_STR!, {
-        expiresIn: process.env.LOGIN_EXPIRES
+        expiresIn: '10s'
     });
-    // res.cookie('jwt', token, {
-    //     httpOnly: true,
-    //     secure: process.env.NODE_ENV != 'development',
-    //     sameSite: 'strict',
-    //     maxAge: 1 * 24 * 60 * 60 * 1000
-    // });
+    const refreshToken = jwt.sign({ email: existingUser.email }, process.env.REFRESH_SECRET_STR!, {
+        expiresIn: '1d'
+    });
+    // console.log(cookie, "<<== cookie  in refrseh ep")
+    res.cookie('refreshToken', refreshToken, {
+        httpOnly: true, //accessible only by web server
+        secure: process.env.NODE_ENV != 'development', //https
+        // signed:true,
+        sameSite: 'strict', //cross-site cookie
+        maxAge: 1 * 24 * 60 * 60 * 1000 // this should match with the refresh token's expiry
+
+    });
+
     res.status(201).json({
         status: 'Success',
         _id: existingUser._id,
         name: existingUser.name,
         email: existingUser.email,
+        roles: existingUser.role,
         access_token: token,
         message: `${existingUser.name} is logged in successfully`
     });
 });
 
+//************** Get Refresh token **************
+
+export const refresh = asyncErrorHanlder(async (req: Request, res: Response, next: NextFunction) => {
+    const cookie = req.cookies.refreshToken;
+    console.log(cookie, '<<== cookie  in refrseh ep');
+    if (!cookie) {
+        const error = customError('hello No Token available in header/authorize. This is because the user is not logged in or token is not present in the protected route. @ksm', 'fail', 400, true);
+        return next(error);
+    }
+    const refreshToken = cookie;
+
+    let decodedRefreshToken: DecodeToken;
+    jwt.verify(refreshToken as string, process.env.REFRESH_SECRET_STR! as string, async (err: any, decoded: any) => {
+        if (err) {
+            const error = customError('No refresh Token expired. @ksm', 'fail', 403, true);
+            return next(error);
+        }
+        decodedRefreshToken = decoded;
+        const existingUser: IUserModel = (await User.findOne({ email: decodedRefreshToken.email })) as IUserModel;
+        if (!existingUser) {
+            const error = customError('No such user with this token exists @ksm', 'fail', 400, true);
+            return next(error);
+        }
+        const token = jwt.sign({ email: existingUser.email, name: existingUser.name, id: existingUser._id }, process.env.SECRET_STR!, {
+            expiresIn: '10s'
+        });
+        res.status(201).json({
+            status: 'Success',
+            _id: existingUser._id,
+            name: existingUser.name,
+            email: existingUser.email,
+            access_token: token,
+            roles: existingUser.role,
+            message: `${existingUser.name} give access token since refresh token valid`
+        });
+    });
+});
+
+//************** Get Refresh token **************
 //************** Get one user**************
 
 export const getUser = asyncErrorHanlder(async (req: Request, res: Response, next: NextFunction) => {
@@ -129,18 +182,18 @@ export const updateUser = async (req: Request, res: Response, next: NextFunction
 //************** Log out user**************
 
 export const logout = asyncErrorHanlder(async (req: Request, res: Response, next: NextFunction) => {
-    res.cookie('jwt', '', {
+    const cookie = req.cookies;
+    if (!cookie) res.status(204).json({ message: 'No cookie available' });
+
+    res.clearCookie('refreshToken', {
         httpOnly: true,
         expires: new Date(0)
     });
-    res.status(200).json({ message: 'logged out' });
+    res.status(200).json({ message: 'logged out cookie cleared ' });
 });
 
 // Auth middleware for Route protection
 export const protect = asyncErrorHanlder(async (req: Request, res: Response, next: NextFunction) => {
-    // if we were to use cookie
-    //token = req.cookies.jwt
-
     // 1. Check whether Token exists
     const authHeadersValue = req.headers.authorization;
     let token;
@@ -148,37 +201,38 @@ export const protect = asyncErrorHanlder(async (req: Request, res: Response, nex
         token = authHeadersValue.split(' ')[1] as string;
     }
     if (!authHeadersValue) {
-        const error = customError('No Token available in header/authorize. This is because the user is not logged in or token is not present in the protected route. @ksm', 'fail', 400, true);
+        // const error = customError('No Token available in header/authorize. This is because the user is not logged in or token is not present in the protected route. @ksm', 'fail', 400, true);
+        const error = customError('TokenExpiredError', 'fail', 403, true);
         return next(error);
     }
 
     // 2. Validate the jwt token
     let decodedToken!: DecodeToken;
-    jwt.verify(token as string, process.env.SECRET_STR! as string, function (err: any, decoded: any) {
+    jwt.verify(token as string, process.env.SECRET_STR! as string, async (err: any, decoded: any) => {
         if (err) {
-            console.log(err, "---->>>>>>server")
+            const error = customError('TokenExpiredError', 'fail', 403, true);
             return next(err);
         }
         decodedToken = decoded;
+        const existingUser: IUserModel = (await User.findOne({ email: decodedToken.email }).select('+passwordChangedAt')) as IUserModel;
+
+        if (!existingUser) {
+            const error = customError('No such user with this token exists @ksm', 'fail', 400, true);
+            return next(error);
+        }
+
+        // 4: If the user has changed the password after the token is verified
+        const isPasswordMofified = await existingUser.isPasswordChanged(existingUser.passwordChangedAt!, decodedToken.iat);
+
+        if (isPasswordMofified) {
+            const error = customError('The password is changed after login. Please login again to continue', 'fail', 401, true);
+            return next(error);
+        }
+        req.user = existingUser as IUserModel;
+        next();
     });
 
     // 3. If the user exists
-    const existingUser: IUserModel = (await User.findOne({ email: decodedToken.email }).select('+passwordChangedAt')) as IUserModel;
-
-    if (!existingUser) {
-        const error = customError('No such user with this token exists @ksm', 'fail', 400, true);
-        return next(error);
-    }
-
-    // 4: If the user has changed the password after the token is verified
-    const isPasswordMofified = await existingUser.isPasswordChanged(existingUser.passwordChangedAt!, decodedToken.iat);
-
-    if (isPasswordMofified) {
-        const error = customError('The password is changed after login. Please login again to continue', 'fail', 401, true);
-        return next(error);
-    }
-    req.user = existingUser as IUserModel;
-    next();
 });
 
 // *************Authorization based on roles middleware*************//

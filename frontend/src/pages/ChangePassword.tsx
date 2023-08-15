@@ -69,7 +69,7 @@ const ChangePassword = () => {
       //   }
       // )
       const response = axiosInstance.post(
-        `/users/update/${user.user.email}`,
+        `/api/users/update/${user.user.email}`,
         changePasswordData
       )
       console.log(response, "<<<<---- response")
@@ -77,12 +77,12 @@ const ChangePassword = () => {
       handleLogout()
     } catch (err) {
       console.log(err)
-      toast.error("Failed to update password")
+      toast.error("Failed to update password try again")
     } finally {
       setIsSubmitting(false)
     }
   }
-  console.log(user)
+
   return (
     <div>
       <div className="flex flex-col items-center justify-center p-6 bg-white dark:bg-gray-900 font-poppins">

@@ -47,7 +47,9 @@ const Predictions = () => {
   }, [kpiData])
 
   return (
-    <DashboardBox width="100%" height="100%" p="1rem" overflow="hidden">
+    <div className="bg-white">
+
+    <DashboardBox width="100%" height="100%" p="1rem" overflow="hidden" >
       <FlexBetween m="1rem 2.5rem" gap="1rem">
         <Box>
           <Typography variant="h3" color={palette.grey[300]}>Revenue and Predictions</Typography>
@@ -124,6 +126,7 @@ const Predictions = () => {
         </ResponsiveContainer>
       )}
     </DashboardBox>
+    </div>
   )
 }
 

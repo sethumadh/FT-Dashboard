@@ -1,4 +1,4 @@
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import AverageStudentsChart from "../components/charts/AverageStudentsChart"
 import CourseProgressChart from "../components/charts/CourseProgressChart"
 import StudentsList from "../components/StudentsList"
@@ -6,33 +6,54 @@ import StudentsList from "../components/StudentsList"
 import Summary from "../components/Summary"
 
 import { useAppSelector, useAppDispatch } from "../redux/store"
-import axios from "axios"
 import { StudentListSchema } from "../helper/zodSchema"
 import { fetchStudentList } from "../redux/features/studentListSlice"
 import useAxiosInstance from "../hooks/useAxiosInstance"
 
+
 const Dashboard = () => {
-  const { axiosInstance } = useAxiosInstance()
+  const [isMounted, setIsMounted] = useState(false)
+  const { axiosInstance, PubcliAxiosInstance } = useAxiosInstance()
+  const controller = new AbortController()
+
   const dispatch = useAppDispatch()
-  const baseURL = "http://localhost:1337"
-  const user = useAppSelector((state) => state.user)
+
 
   useEffect(() => {
+    setIsMounted(true)
     const fetchStudents = async () => {
-      try {
-        const data = await axiosInstance.get(`/vendor/6486c6ab01d5e2e87cafd3e1`)
+      if (isMounted) {
+        try {
+          const data = await axiosInstance.get(
+            `/api/vendor/6486c6ab01d5e2e87cafd3e1`,
+            {
+              signal: controller.signal,
+            }
+          )
 
-        const std = StudentListSchema.parse(data?.data?.studentsEnrolled)
-        
+          const std = StudentListSchema.parse(data?.data?.studentsEnrolled)
 
-        dispatch(fetchStudentList(std))
-      } catch (err) {
-        console.log(err)
+          // const res = await axios.get("http://localhost:1337/api/users/refresh", {
+          //   withCredentials: true,
+          // })
+          // const res = await PubcliAxiosInstance.get(`/api/users/refresh`, {
+          //   signal: controller.signal,
+          // })
+          // console.log(res, "->>refresh")
+          console.log(std, "students")
+          dispatch(fetchStudentList(std))
+        } catch (err) {
+          console.log(err, ">>>>>>refreshe error")
+          // signout
+        }
       }
     }
     fetchStudents()
-  }, [])
-
+    return () => {
+      setIsMounted(false)
+      controller.abort()
+    }
+  }, [axiosInstance,isMounted,dispatch,controller])
   return (
     <div className=" my-8 w-full max-w-7xl mx-auto font-mada">
       <div id="dashboard" className="mx-8 ">

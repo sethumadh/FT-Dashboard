@@ -20,7 +20,9 @@ import StudentDetail from "./pages/StudentDetail"
 import { store } from "./redux/store"
 import Analytics from "./pages/Analytics"
 import Predictions from "./pages/Predictions"
+import axios from "axios"
 
+axios.defaults.withCredentials = true
 const router = createBrowserRouter(
   createRoutesFromElements(
     <>

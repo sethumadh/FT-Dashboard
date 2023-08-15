@@ -110,10 +110,7 @@ const Signin = () => {
             email: response.data.email,
           },
         }
-        // console.log(userData, "<<-- after login")
-        axios.defaults.headers.common[
-          "Authorization"
-        ] = `Bearer ${response.data.accessToken}`
+
         signupSucess()
         dispatch(fetchUser({ ...userData }))
         navigate("/", { replace: true })

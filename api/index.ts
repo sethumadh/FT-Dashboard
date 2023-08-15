@@ -5,7 +5,7 @@ import helmet from 'helmet';
 import morgan from 'morgan';
 import bodyParser from 'body-parser';
 
-import { config } from './src/config/config';
+import { corsOptions, config } from './src/config/config';
 import kpiRoutes from './src/routes/kpi';
 import productRoutes from './src/routes/products';
 import transactionRoutes from './src/routes/transaction';
@@ -24,6 +24,42 @@ import { customError } from './src/utils/customError';
 import StudentCourses from './src/models/Student';
 import { Rohit } from './src/data/mockRohit';
 import path from 'path';
+import cookieParser from 'cookie-parser';
+
+const app = express();
+app.use(cookieParser());
+app.use(
+    cors({
+        credentials: true,
+        origin: ['http://localhost:3000', 'http://localhost:5173', 'http://localhost:5174', 'http://localhost:5175'],
+        methods: ['GET', 'POST', 'PUT', 'DELETE'],
+        optionsSuccessStatus: 200
+    })
+);
+//******************************* */
+// app.use(cors(corsOptions));
+// app.use(cors());
+// app.use((req, res, next) => {
+//     res.header('Access-Control-Allow-Origin', 'http://localhost:5173');
+//     res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
+//     res.header('Access-Control-Allow-Credentials', 'true');
+
+//     if (req.method == 'OPTIONS') {
+//         res.header('Access-Control-Allow-Methods', 'PUT, POST, PATCH, DELETE, GET');
+//         return res.status(200).json({});
+//     }
+
+//     next();
+// });
+
+//*********************************/
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(helmet());
+app.use(helmet.crossOriginResourcePolicy({ policy: 'cross-origin' }));
+app.use(morgan('common'));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
 
 // unhandled exception Error
 process.on('uncaughtException', (err: Err) => {
@@ -32,16 +68,6 @@ process.on('uncaughtException', (err: Err) => {
 
     process.exit(1);
 });
-
-const app = express();
-app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
-app.use(helmet());
-app.use(helmet.crossOriginResourcePolicy({ policy: 'cross-origin' }));
-app.use(morgan('common'));
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(cors());
 
 //Routes
 app.use('/api/kpi', kpiRoutes);
@@ -55,7 +81,6 @@ app.use('/api/student-course', studentCourseRoutes);
 if (process.env.NODE_ENV === 'production') {
     const __dirname = path.resolve();
     app.use(express.static(path.join(__dirname, '/frontend/dist/index.html')));
-
     app.get('*', (req: Request, res: Response) => res.sendFile(path.resolve(__dirname, 'frontend', 'dist', 'index.html')));
 }
 
@@ -63,7 +88,6 @@ if (process.env.NODE_ENV === 'production') {
 
 app.all('*', (req: Request, res: Response, next: NextFunction) => {
     // ************** -->> resubale / or use a class customerError
-
     const error = customError(`cant find ${req.originalUrl}`, 'fail', 404, true);
     next(error);
 });
@@ -72,28 +96,6 @@ app.all('*', (req: Request, res: Response, next: NextFunction) => {
 app.use(globalErrorHandler);
 
 mongoose.connect(`${config.mongo.url}/admin_dash`, { retryWrites: true, w: 'majority' }).then(async () => {
-    app.use(cors());
-    //******************************* */
-    // app.use(
-    //     cors({
-    //         origin: 'front end domain url' -->> which we should update after deplyoting frontend,
-    //         methods: ['POST', 'GET', 'PATCH'],
-    //         credentials:true
-    //     })
-    // );
-    //*********************************/
-
-    app.use((req, res, next) => {
-        res.header('Access-Control-Allow-Origin', '*');
-        res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
-
-        if (req.method == 'OPTIONS') {
-            res.header('Access-Control-Allow-Methods', 'PUT, POST, PATCH, DELETE, GET');
-            return res.status(200).json({});
-        }
-
-        next();
-    });
     console.log('Mongo connected successfully.');
     // const server = app.listen(config.server.port, () => console.log(`Server Port: http://localhost:${config.server.port}`));
     // Add data one time only
@@ -121,4 +123,4 @@ process.on('unhandledRejection', (err: Err) => {
     });
 });
 //  for vercel to use express as a serverless function
-module.exports = app
+module.exports = app;

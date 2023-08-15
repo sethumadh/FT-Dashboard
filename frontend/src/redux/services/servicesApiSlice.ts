@@ -8,16 +8,16 @@ import { api } from "./api"
 export const servicesSliceApi = api.injectEndpoints({
   endpoints: (build) => ({
     getKpis: build.query<Array<GetKpisResponse>, void>({
-      query: () => "/kpi/kpis",
+      query: () => "/api/kpi/kpis",
       
       providesTags: ["Kpis"],
     }),
     getProducts: build.query<Array<GetProductsResponse>, void>({
-      query: () => "/product/products",
+      query: () => "/api/product/products",
       providesTags: ["Products"],
     }),
     getTransactions: build.query<Array<GetTransactionsResponse>, void>({
-      query: () => "/transaction/transactions",
+      query: () => "/api/transaction/transactions",
       providesTags: ["Transactions"],
     }),
   }),

@@ -37,16 +37,16 @@ const duplicationErrorHandler = (err: Err) => {
     customError(msg, 'Fail', 400, true);
 };
 const handleExpiredJwt = (err: Err) => {
-    const msg = `TokenExpired`;
+    const msg = `TokenExpiredError`;
     err.message = msg;
     err.isOperational = true;
-    customError(msg, 'Fail', 400, true);
+    customError(msg, 'Fail', 403, true);
 };
 const handleJwtError = (err: Err) => {
-    const msg = `Jwt Token has been tampered with`;
+    const msg = `TokenExpiredError`;
     err.message = msg;
     err.isOperational = true;
-    customError(msg, 'Fail', 400, true);
+    customError(msg, 'Fail', 403, true);
 };
 
 // globakl error handler

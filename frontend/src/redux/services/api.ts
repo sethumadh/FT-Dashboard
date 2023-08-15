@@ -2,7 +2,7 @@ import { fetchBaseQuery, createApi } from '@reduxjs/toolkit/query/react';
 import { YourRootState } from 'redux/types';
 
 const baseQuery = fetchBaseQuery({
-  baseUrl: 'http://localhost:1337/api',
+  baseUrl: 'http://localhost:1337',
   prepareHeaders: (headers, { getState }) => {
     const accessToken = (getState() as YourRootState).user.accessToken; // Step 2: Get the accessToken from the Redux store
     if (accessToken) {

@@ -58,7 +58,7 @@ const StudentDetail = () => {
     const fetchStudent = async () => {
       try {
         setIsLoading(true)
-        const data = await axiosInstance(`/student-course/${params.id}`)
+        const data = await axiosInstance(`/api/student-course/${params.id}`)
         console.log(data?.data, "<<<<< full data")
         const std = StudentDetailsSchema.parse(data?.data?.basicDetails)
         const ctd = CourseDetailsSchema.parse(data?.data.courses)
@@ -69,6 +69,7 @@ const StudentDetail = () => {
         setIsLoading(false)
       } catch (err) {
         console.log(err)
+        // signout
         setIsError(true)
       } finally {
         setIsLoading(false)
