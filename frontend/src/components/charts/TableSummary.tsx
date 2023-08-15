@@ -1,10 +1,15 @@
 import React, { useEffect, useRef } from "react"
 import Highcharts from "highcharts"
 import { useGetKpisQuery } from "../../redux/services/servicesApiSlice"
-
+import { persistor, useAppSelector, useAppDispatch } from "../../redux/store"
+import { logoutSuccess } from "../../helper/functions/functions"
+import useAxiosInstance from "../../hooks/useAxiosInstance"
+import { useNavigate } from "react-router-dom"
 
 const TableSummary = () => {
-  const { data: kpiData } = useGetKpisQuery()
+  const { axiosInstance } = useAxiosInstance()
+  const navigate = useNavigate()
+  const { data: kpiData, isError } = useGetKpisQuery()
   const chartContainerRef = useRef(null)
 
   useEffect(() => {
@@ -54,7 +59,21 @@ const TableSummary = () => {
       })
     }
   }, [kpiData])
-
+  const handleLogout = async () => {
+    try {
+      persistor.purge()
+      logoutSuccess()
+      navigate("/login")
+      const response = await axiosInstance.post(`/api/users/logout`)
+      console.log(response)
+    } catch (err) {
+      // console.log(err)
+      navigate("/login")
+    }
+  }
+  if (isError) {
+    handleLogout()
+  }
   return (
     <div style={{ padding: "10px" }}>
       <div ref={chartContainerRef} />

@@ -47,7 +47,7 @@ const useAxiosInstance = (): UseAxiosInstanceType => {
   axiosInstance.interceptors.response.use(
     (response) => response,
     async (error) => {
-      console.log(error?.config.sent, "<<-- before login")
+      // console.log(error?.config.sent, "<<-- before login")
       const prevReq = error?.config
       if (
         error?.response?.data?.message == "TokenExpiredError" &&
@@ -63,10 +63,10 @@ const useAxiosInstance = (): UseAxiosInstanceType => {
               email: response.data.email,
             },
           }
-          console.log(userData.accessToken, "new access token")
+          // console.log(userData.accessToken, "new access token")
           dispatch(fetchUser({ ...userData }))
         }
-        console.log(prevReq?.sent, "<<-- after login")
+        // console.log(prevReq?.sent, "<<-- after login")
         prevReq.headers[
           `Authorization`
         ] = `Bearer ${response.data.access_token}`

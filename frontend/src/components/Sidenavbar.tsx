@@ -6,25 +6,29 @@ import { useNavigate } from "react-router-dom"
 import { icons } from "../constant"
 import { persistor, useAppSelector, useAppDispatch } from "../redux/store"
 import { setActivePath } from "../redux/features/sidebarSlice"
-import {
-  Avatar,
-  AvatarFallback,
-  AvatarImage,
-
-} from "../components/ui/avatar"
+import { Avatar, AvatarFallback, AvatarImage } from "../components/ui/avatar"
 import { logoutSuccess } from "../helper/functions/functions"
+import useAxiosInstance from "../hooks/useAxiosInstance"
 
 function SideNavBar() {
+  const { axiosInstance } = useAxiosInstance()
   const location = useLocation()
   const dispatch = useAppDispatch()
   const user = useAppSelector((state) => state.user)
   const activeLink = useAppSelector((state) => state.sidebar.activePath)
   const [collapsed, setCollapsed] = useState(true)
   const navigate = useNavigate()
-  const handleLogout = () => {
-    persistor.purge()
-    logoutSuccess()
-    navigate("/login")
+  const handleLogout = async () => {
+    try {
+      persistor.purge()
+      logoutSuccess()
+      navigate("/login")
+      const response = await axiosInstance.post(`/api/users/logout`)
+      console.log(response)
+    } catch (err) {
+      // console.log(err)
+      navigate("/login")
+    }
   }
 
   useEffect(() => {
@@ -130,7 +134,7 @@ function SideNavBar() {
               handleLogout()
             }}
             icon={<icons.LogoutIcon style={{ color: "black" }} />}
-            component={<Link to={`/`} />}
+            component={<Link to={`/login`} />}
           >
             Log Out
           </MenuItem>

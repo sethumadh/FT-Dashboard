@@ -4,6 +4,7 @@ import { useGetKpisQuery } from "../redux/services/servicesApiSlice"
 
 import { Box, Button, Typography, useTheme } from "@mui/material"
 import { useMemo, useState } from "react"
+import { persistor, useAppSelector, useAppDispatch } from "../redux/store"
 import {
   CartesianGrid,
   Label,
@@ -17,11 +18,16 @@ import {
   YAxis,
 } from "recharts"
 import regression, { DataPoint } from "regression"
+import { logoutSuccess } from "../helper/functions/functions"
+import useAxiosInstance from "../hooks/useAxiosInstance"
+import { useNavigate } from "react-router-dom"
 
 const Predictions = () => {
+  const { axiosInstance } = useAxiosInstance()
+  const navigate = useNavigate()
   const { palette } = useTheme()
   const [isPredictions, setIsPredictions] = useState(false)
-  const { data: kpiData } = useGetKpisQuery()
+  const { data: kpiData , isError} = useGetKpisQuery()
 
   const formattedData = useMemo(() => {
     if (!kpiData) return []
@@ -46,6 +52,21 @@ const Predictions = () => {
     })
   }, [kpiData])
 
+  const handleLogout = async () => {
+    try {
+      persistor.purge()
+      logoutSuccess()
+      navigate("/login")
+      const response = await axiosInstance.post(`/api/users/logout`)
+      console.log(response)
+    } catch (err) {
+      // console.log(err)
+      navigate("/login")
+    }
+  }
+  if (isError) {
+    handleLogout()
+  }
   return (
     <div className="bg-white">
 

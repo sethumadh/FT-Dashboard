@@ -2,10 +2,15 @@ import { useGetKpisQuery } from "../../redux/services/servicesApiSlice"
 import Highcharts from "highcharts"
 import HighchartsReact from "highcharts-react-official"
 
-
+import { persistor, useAppSelector, useAppDispatch } from "../../redux/store"
+import { logoutSuccess } from "../../helper/functions/functions"
+import useAxiosInstance from "../../hooks/useAxiosInstance"
+import { useNavigate } from "react-router-dom"
 import { useMemo } from "react"
 
 const Row2Line = () => {
+  const { axiosInstance } = useAxiosInstance()
+  const navigate = useNavigate()
   const { data, isLoading, isError } = useGetKpisQuery()
   const month = useMemo(() => {
     return data && data[0].monthlyData.map(({ month }) => month.substring(0, 3))
@@ -94,7 +99,21 @@ const Row2Line = () => {
       },
     ],
   }
-
+  const handleLogout = async () => {
+    try {
+      persistor.purge()
+      logoutSuccess()
+      navigate("/login")
+      const response = await axiosInstance.post(`/api/users/logout`)
+      console.log(response)
+    } catch (err) {
+      // console.log(err)
+      navigate("/login")
+    }
+  }
+  if (isError) {
+    handleLogout()
+  }
   return <HighchartsReact highcharts={Highcharts} options={options} />
 }
 

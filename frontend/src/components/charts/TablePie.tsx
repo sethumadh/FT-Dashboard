@@ -3,9 +3,15 @@ import HighchartsReact from "highcharts-react-official"
 
 import { ExpensesByCategory } from "../../redux/types"
 import { useGetKpisQuery } from "../../redux/services/servicesApiSlice"
+import { logoutSuccess } from "../../helper/functions/functions"
+import useAxiosInstance from "../../hooks/useAxiosInstance"
+import { useNavigate } from "react-router-dom"
+import { persistor, useAppSelector, useAppDispatch } from "../../redux/store"
 
 const TablePie = () => {
-  const { data: kpiData } = useGetKpisQuery()
+  const { axiosInstance } = useAxiosInstance()
+  const navigate = useNavigate()
+  const { data: kpiData , isError} = useGetKpisQuery()
   //   const totalExp = kpiData && kpiData[0].totalExpenses
   const categories = kpiData && Object.keys(kpiData[0].expensesByCategory)
 
@@ -54,7 +60,21 @@ const TablePie = () => {
       },
     ],
   }
-
+  const handleLogout = async () => {
+    try {
+      persistor.purge()
+      logoutSuccess()
+      navigate("/login")
+      const response = await axiosInstance.post(`/api/users/logout`)
+      console.log(response)
+    } catch (err) {
+      // console.log(err)
+      navigate("/login")
+    }
+  }
+  if (isError) {
+    handleLogout()
+  }
   return (
     <div>
       <HighchartsReact highcharts={Highcharts} options={options} />

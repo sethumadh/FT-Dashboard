@@ -26,12 +26,15 @@ import { Rohit } from './src/data/mockRohit';
 import path from 'path';
 import cookieParser from 'cookie-parser';
 
+const url = ['http://localhost:3000', 'http://localhost:5173', 'http://localhost:5174', 'http://localhost:5175'];
+const origin = process.env.NODE_ENV === 'development' ? ['http://localhost:5173', 'http://localhost:5174', 'http://localhost:5175'] : 'http://example.com';
+
 const app = express();
 app.use(cookieParser());
 app.use(
     cors({
         credentials: true,
-        origin: ['http://localhost:3000', 'http://localhost:5173', 'http://localhost:5174', 'http://localhost:5175'],
+        origin: origin,
         methods: ['GET', 'POST', 'PUT', 'DELETE'],
         optionsSuccessStatus: 200
     })

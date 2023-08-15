@@ -1,13 +1,21 @@
-import { useGetKpisQuery, useGetProductsQuery } from "../../redux/services/servicesApiSlice"
+import {
+  useGetKpisQuery,
+  useGetProductsQuery,
+} from "../../redux/services/servicesApiSlice"
 import Highcharts from "highcharts"
 import HighchartsReact from "highcharts-react-official"
 
-
+import { persistor, useAppSelector, useAppDispatch } from "../../redux/store"
+import { logoutSuccess } from "../../helper/functions/functions"
+import useAxiosInstance from "../../hooks/useAxiosInstance"
+import { useNavigate } from "react-router-dom"
 import { useMemo } from "react"
 
 const Row2Line = () => {
-  const { data: operationalData } = useGetKpisQuery()
-  const { data: productData } = useGetProductsQuery()
+  const { axiosInstance } = useAxiosInstance()
+  const navigate = useNavigate()
+  const { data: operationalData, isError: isErrorKpi } = useGetKpisQuery()
+  const { data: productData, isError: isErrorProd } = useGetProductsQuery()
   const month = useMemo(() => {
     return (
       operationalData &&
@@ -104,7 +112,21 @@ const Row2Line = () => {
       },
     ],
   }
-
+  const handleLogout = async () => {
+    try {
+      persistor.purge()
+      logoutSuccess()
+      navigate("/login")
+      const response = await axiosInstance.post(`/api/users/logout`)
+      console.log(response)
+    } catch (err) {
+      // console.log(err)
+      navigate("/login")
+    }
+  }
+  if (isErrorProd || isErrorKpi) {
+    handleLogout()
+  }
   return (
     <div style={{ padding: "8px" }}>
       <HighchartsReact highcharts={Highcharts} options={options} />
