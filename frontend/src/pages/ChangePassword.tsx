@@ -28,7 +28,7 @@ const ChangePassword = () => {
   const user = useAppSelector((state) => state.user)
   const [open, setOpen] = useState(0)
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const baseURL = "http://localhost:1337"
+  const baseURL = import.meta.env.VITE_BASE_URL
   const handleOpen = (value: number) => {
     setOpen(open === value ? 0 : value)
   }

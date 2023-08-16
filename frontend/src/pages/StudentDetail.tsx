@@ -39,7 +39,7 @@ const StudentDetail = () => {
   const [isLoading, setIsLoading] = useState(false)
   const [isError, setIsError] = useState(false)
   const params = useParams()
-  const baseURL = "http://localhost:1337"
+
   const user = useAppSelector((state) => state.user)
 
   const handleOpen = (value: number) => {
