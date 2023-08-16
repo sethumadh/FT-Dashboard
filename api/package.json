@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "index.ts",
   "scripts": {
-    "build": "rimraf dist && npx tsc",
+    "build": "tsc",
     "prestart": "npm run build",
     "start": "node build/index.js",
     "preserve": "npm run build",
