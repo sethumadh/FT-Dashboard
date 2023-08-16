@@ -21,7 +21,7 @@ const Signin = () => {
   const persist = useAppSelector((state) => state.user.persist)
   const location = useLocation()
   const dispatch = useAppDispatch()
-  const baseURL = "http://localhost:1337/api"
+  const baseURL = import.meta.env.VITE_BASE_URL
   const navigate = useNavigate()
   const [isSubmitting, setIsSubmitting] = useState(false)
   const from = location.state?.from?.pathname || "/"
@@ -60,7 +60,7 @@ const Signin = () => {
   const signin = async (loginFormData: { email: string; password: string }) => {
     setIsSubmitting(true)
     try {
-      const response = await axios.post(`${baseURL}/users/login`, loginFormData)
+      const response = await axios.post(`${baseURL}/api/users/login`, loginFormData)
 
       if (response.data.access_token) {
         const userData = {
@@ -101,7 +101,7 @@ const Signin = () => {
     setIsSubmitting(true)
     try {
       const response = await axios.post(
-        `${baseURL}/users/signup`,
+        `${baseURL}/api/users/signup`,
         signupFormData
       )
 

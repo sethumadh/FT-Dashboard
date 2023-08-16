@@ -4,15 +4,15 @@ import useRefreshToken from "./useRefreshToken"
 import { fetchUser } from "../redux/features/userSlice"
 import { useNavigate } from "react-router-dom"
 
-const baseURL = "http://localhost:1337"
-
 // Define a custom type for the return value of useAxiosInstance
 type UseAxiosInstanceType = {
   axiosInstance: AxiosInstance
   PubcliAxiosInstance: AxiosInstance
 }
 
+
 const useAxiosInstance = (): UseAxiosInstanceType => {
+  const baseURL = import.meta.env.VITE_BASE_URL
   const navigate = useNavigate()
   const dispatch = useAppDispatch()
   const { refresh } = useRefreshToken()
@@ -20,7 +20,7 @@ const useAxiosInstance = (): UseAxiosInstanceType => {
   // console.log(user.accessToken, "access Token")
 
   const axiosInstance: AxiosInstance = axios.create({
-    baseURL,
+    baseURL:import.meta.env.VITE_BASE_URL,
     headers: {
       Accept: `application/json`,
       Authorization: `Bearer ${user.accessToken}`,
