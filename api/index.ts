@@ -27,7 +27,7 @@ import path from 'path';
 import cookieParser from 'cookie-parser';
 
 const url = ['http://localhost:3000', 'http://localhost:5173', 'http://localhost:5174', 'http://localhost:5175'];
-const origin = process.env.NODE_ENV === 'development' ? ['http://localhost:5173', 'http://localhost:5174', 'http://localhost:5175'] : ['http://example.com','http://localhost:5173', 'http://localhost:5174', 'http://localhost:5175'];
+const origin = process.env.NODE_ENV === 'development' ? ['http://localhost:5173', 'http://localhost:5174', 'http://localhost:5175'] : ['https://ft-dashboard-app.onrender.com','http://localhost:5173', 'http://localhost:5174', 'http://localhost:5175'];
 
 const app = express();
 app.use(cookieParser());
