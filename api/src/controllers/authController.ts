@@ -40,11 +40,11 @@ export const signup = asyncErrorHanlder(async (req: Request, res: Response, next
 
     const newUser: IUserModel = await User.create(req.body);
     const token = jwt.sign({ email: newUser.email, name: newUser.name, id: newUser._id }, process.env.SECRET_STR!, {
-        expiresIn: '10s'
+        expiresIn: '60s'
     });
 
     const refreshToken = jwt.sign({ email: newUser.email }, process.env.REFRESH_SECRET_STR!, {
-        expiresIn: '15s'
+        expiresIn: '1ds'
     });
 
     res.cookie('refreshToken', refreshToken, {
@@ -85,10 +85,10 @@ export const login = asyncErrorHanlder(async (req: Request, res: Response, next:
         return next(error);
     }
     const token = jwt.sign({ email: existingUser.email, name: existingUser.name, id: existingUser._id }, process.env.SECRET_STR!, {
-        expiresIn: '10s'
+        expiresIn: '60s'
     });
     const refreshToken = jwt.sign({ email: existingUser.email }, process.env.REFRESH_SECRET_STR!, {
-        expiresIn: '15s'
+        expiresIn: '1d'
     });
     // console.log(cookie, "<<== cookie  in refrseh ep")
     res.cookie('refreshToken', refreshToken, {
@@ -97,7 +97,6 @@ export const login = asyncErrorHanlder(async (req: Request, res: Response, next:
         // signed:true,
         sameSite: 'strict', //cross-site cookie
         maxAge: 1 * 24 * 60 * 60 * 1000 // this should match with the refresh token's expiry
-
     });
 
     res.status(201).json({
@@ -131,11 +130,11 @@ export const refresh = asyncErrorHanlder(async (req: Request, res: Response, nex
         decodedRefreshToken = decoded;
         const existingUser: IUserModel = (await User.findOne({ email: decodedRefreshToken.email })) as IUserModel;
         if (!existingUser) {
-            const error = customError("TokenExpiredError", 'fail', 400, true);
+            const error = customError('TokenExpiredError', 'fail', 400, true);
             return next(error);
         }
         const token = jwt.sign({ email: existingUser.email, name: existingUser.name, id: existingUser._id }, process.env.SECRET_STR!, {
-            expiresIn: '10s'
+            expiresIn: '60s'
         });
         res.status(201).json({
             status: 'Success',
