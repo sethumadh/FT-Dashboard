@@ -18,17 +18,26 @@ import { Avatar, AvatarFallback, AvatarImage } from "../components/ui/avatar"
 
 import { logoutSuccess } from "../helper/functions/functions"
 import { icons } from "../constant"
+import useAxiosInstance from "../hooks/useAxiosInstance"
 
 const MobileViewSidenavbar = ({
   openRight,
   closeDrawerRight,
 }: MobileViewSidenavbarProps) => {
+   const { axiosInstance } = useAxiosInstance()
   const user = useAppSelector((state) => state.user)
   const navigate = useNavigate()
-  const handleLogout = () => {
-    persistor.purge()
-    logoutSuccess()
-    navigate("/login")
+  const handleLogout = async () => {
+    try {
+      persistor.purge()
+      logoutSuccess()
+      navigate("/login")
+      const response = await axiosInstance.post(`/api/users/logout`)
+      console.log(response)
+    } catch (err) {
+      // console.log(err)
+      navigate("/login")
+    }
   }
   return (
     <div>
@@ -87,6 +96,7 @@ const MobileViewSidenavbar = ({
                 to={"/"}
                 onClick={() => {
                   handleLogout()
+                  persistor.purge()
                 }}
               >
                 Log Out
