@@ -51,7 +51,7 @@ export const signup = asyncErrorHanlder(async (req: Request, res: Response, next
         httpOnly: true,
         // signed:true,
         secure: process.env.NODE_ENV != 'development',
-        sameSite: 'none',
+        sameSite: 'strict',
         maxAge: 1 * 24 * 60 * 60 * 1000 // this should match with the refresh token's expiry
         // maxAge: 20 * 1000000000
     });
