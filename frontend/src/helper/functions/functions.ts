@@ -120,6 +120,10 @@ export const signupSucess = () =>
 export const signupError = (message: string) => {
   if (message == "UserExists") {
     message = "A user with that email already exists"
+  } else if (
+    message == "A user with this email already exists in the Database"
+  ) {
+    message = "A user with this email already exists"
   } else {
     message = "Something went wrong. Please try again!"
   }
