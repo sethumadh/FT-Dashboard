@@ -125,5 +125,5 @@ process.on('unhandledRejection', (err: Err) => {
         process.exit(1);
     });
 });
-//  for vercel to use express as a serverless function
-module.exports = app;
+
+
