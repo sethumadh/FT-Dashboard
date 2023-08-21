@@ -112,14 +112,15 @@ const Signin = () => {
             name: response.data.name,
             email: response.data.email,
           },
-        }
 
+        }
+        console.log(userData, "userdata sign up")
         signupSucess()
         dispatch(fetchUser({ ...userData }))
         navigate("/", { replace: true })
       }
     } catch (err) {
-      // console.log(err)
+      console.log(err)
       signupError()
     } finally {
       setIsSubmitting(false)
