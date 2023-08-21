@@ -111,7 +111,14 @@ export const logoutSuccess = () => toast.success("Succesfully logged out !")
 // *******************************************************//
 // login logout success
 
-export const loginError = () => toast.error("Email or Password is incorrect")
+export const loginError = (message: string) => {
+  if (message == "No such user exists") {
+    message = "No user with that email exists. Please signup"
+  } else {
+    message = "Email or password is incorrect"
+  }
+  return toast.error(message)
+}
 export const loginSucess = () => toast.success("Succesfully Logged in")
 // *******************************************************//
 // *******************Signup ************************************//
@@ -120,10 +127,6 @@ export const signupSucess = () =>
 export const signupError = (message: string) => {
   if (message == "UserExists") {
     message = "A user with that email already exists"
-  } else if (
-    message == "A user with this email already exists in the Database"
-  ) {
-    message = "A user with this email already exists"
   } else {
     message = "Something went wrong. Please try again!"
   }
