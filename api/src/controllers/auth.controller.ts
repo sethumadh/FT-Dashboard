@@ -32,7 +32,7 @@ export const signup = asyncErrorHanlder(async (req: Request, res: Response, next
     const existingUser = await User.findOne({ email });
 
     if (existingUser) {
-        const error = customError('A user with this email already exists in the Database', 'fail', 400, true);
+        const error = customError('A user with this email already exists', 'fail', 400, true);
         return next(error);
     }
 

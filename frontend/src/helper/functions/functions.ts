@@ -125,9 +125,7 @@ export const loginSucess = () => toast.success("Succesfully Logged in")
 export const signupSucess = () =>
   toast.success("Succesfully Signed up in. You are logged in!")
 export const signupError = (message: string) => {
-  if (message == "A user with this email already exists in the Database") {
-    message = "A user with that email already exists"
-  } else {
+  if (message != "A user with this email already exists") {
     message = "Something went wrong. Please try again!"
   }
   return toast.error(message)
