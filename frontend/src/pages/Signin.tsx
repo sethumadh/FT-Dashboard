@@ -120,9 +120,10 @@ const Signin = () => {
         dispatch(fetchUser({ ...userData }))
         navigate("/", { replace: true })
       }
-    } catch (err) {
+    } catch (err:any) {
       console.log(err)
-      signupError()
+      signupError(err.response.data.message)
+
     } finally {
       setIsSubmitting(false)
     }
