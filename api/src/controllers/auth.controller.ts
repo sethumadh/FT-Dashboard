@@ -32,7 +32,7 @@ export const signup = asyncErrorHanlder(async (req: Request, res: Response, next
     const existingUser = await User.findOne({ email });
 
     if (existingUser) {
-        const error = customError('A user with this email already exists in the Database', 'fail', 400, true);
+        const error = customError('UserExists', 'fail', 400, true);
         return next(error);
     }
 
@@ -42,7 +42,7 @@ export const signup = asyncErrorHanlder(async (req: Request, res: Response, next
     });
 
     const refreshToken = jwt.sign({ email: newUser.email }, process.env.REFRESH_SECRET_STR!, {
-        expiresIn: '1ds'
+        expiresIn: '1d'
     });
 
     res.cookie('refreshToken', refreshToken, {
