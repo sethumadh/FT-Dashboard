@@ -38,6 +38,7 @@ const Signin = () => {
     },
   })
 
+
   const signupMethods = useForm<SignupData>({
     // mode: "onChange",
     resolver: zodResolver(SignupSchema),
@@ -219,7 +220,10 @@ const Signin = () => {
               </div>
             </div>
           </div>
-          <p className="items-center justify-center flex text-2xl">Or</p>
+          <div className="items-center justify-center flex text-2xl">Or login as a  
+          <button onClick={()=>{
+            signin({email:'guest@guest.com', password:"111111"})
+          }} className="px-4 py-2 shadow-lg rounded-xl mx-4 bg-slate-50 border">Guest</button>  </div>
           <div className="flex flex-col overflow-y-auto md:flex-row ">
             <div className="flex items-center justify-center p-6 sm:p-12  mx-auto w-full">
               <div className="w-full">
