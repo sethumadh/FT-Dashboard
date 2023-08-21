@@ -1,7 +1,5 @@
 import express, { NextFunction, Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
-import bcrypt from 'bcryptjs';
-import util from 'util';
 import crypto from 'crypto';
 
 import { asyncErrorHanlder } from '../utils/asyncErrorHandler';
@@ -173,7 +171,7 @@ export const updateUser = async (req: Request, res: Response, next: NextFunction
         const error = customError('Password and confirm password does not match', 'fail', 400, true);
         return next(error);
     }
-    existingUser.password = password || existingUser;
+    existingUser.password = password || existingUser.password;
     const updateUser = await existingUser.save();
     res.status(200).json(updateUser);
 };
